@@ -1,11 +1,28 @@
 # 🏢 SAP ABAP ERP Process Simulation Project
 
-![SAP](https://img.shields.io/badge/SAP-ABAP-blue) ![Status](https://img.shields.io/badge/Status-Complete-green) ![Level](https://img.shields.io/badge/Level-Beginner-yellow)
+![SAP](https://img.shields.io/badge/SAP-ABAP-blue)
+![Status](https://img.shields.io/badge/Status-Complete-green)
+![Level](https://img.shields.io/badge/Level-Beginner-yellow)
+![University](https://img.shields.io/badge/University-KIIT-orange)
+![Language](https://img.shields.io/badge/Language-ABAP-red)
+![Modules](https://img.shields.io/badge/Modules-FI%20%7C%20MM%20%7C%20SD-blue)
 
 ---
 
 ## 📌 Project Title
 **SAP ABAP ERP Process Simulation — P2P, O2C & ALV Report**
+
+---
+
+## 👨‍🎓 Student Details
+
+| Field | Details |
+|-------|---------|
+| **Name** | Ayush Raj |
+| **Roll Number** | 23051337 |
+| **Program** | B.Tech — SAP Business Cloud Data Analyst |
+| **University** | KIIT University, Bhubaneswar |
+| **Academic Year** | 2024 – 2025 |
 
 ---
 
@@ -20,6 +37,8 @@ This project simulates three core **SAP ERP business processes** using **ABAP (S
 | SD | ALV Report | Grid display of all orders with totals |
 
 > **Purpose:** Academic student project demonstrating SAP ERP process understanding through ABAP programming.
+
+> **Important:** This is a **simulation project** — it uses internal tables (in-memory data), not actual SAP database tables. No real SAP master data or configuration is required to run these programs.
 
 ---
 
@@ -36,6 +55,23 @@ SAP_Project/
 
 ---
 
+## 🔄 Process Flow Overview
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║              PROCURE-TO-PAY (P2P)   [MM + FI]               ║
+║   PR  ──►  PO  ──►  GR  ──►  Invoice  ──►  Payment          ║
+╠══════════════════════════════════════════════════════════════╣
+║              ORDER-TO-CASH (O2C)    [SD + FI]                ║
+║   SO  ──►  Delivery  ──►  PGI  ──►  Billing  ──►  Receipt   ║
+╠══════════════════════════════════════════════════════════════╣
+║              ALV REPORT             [SD]                     ║
+║   Internal Table  ──►  Field Catalog  ──►  Grid Display      ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+---
+
 ## ✅ Features
 
 ### 🔹 Program 1: ZP2P_PROCESS — Procure to Pay
@@ -43,13 +79,14 @@ Simulates the complete **buying/procurement cycle**:
 - ✅ **Purchase Requisition (PR)** — Internal request to buy goods
 - ✅ **Purchase Order (PO)** — Official order placed with vendor
 - ✅ **Goods Receipt (GR)** — Goods received and stored in warehouse
-- ✅ **Invoice Verification** — Vendor bill matched with PO & GR
+- ✅ **Invoice Verification** — Vendor bill matched with PO & GR (3-way matching)
 - ✅ **Payment to Vendor** — Final payment made (FI cleared)
 
 ### 🔹 Program 2: ZO2C_PROCESS — Order to Cash
 Simulates the complete **selling/revenue cycle**:
 - ✅ **Sales Order (SO)** — Customer places order
 - ✅ **Delivery** — Goods packed and shipped to customer
+- ✅ **Post Goods Issue (PGI)** — Stock reduced in SAP automatically
 - ✅ **Billing Document** — Invoice created for customer (AR posted)
 - ✅ **Payment Receipt** — Customer payment received and cleared
 
@@ -60,13 +97,14 @@ Displays a professional **interactive report** showing:
 - ✅ Order Date, Status
 - ✅ **Column Totals** for Amount
 - ✅ **Zebra striping** for readability
+- ✅ **Selection screen** for filtering by customer
 
 ---
 
 ## 🖥️ How to Run in SAP (SE38 Steps)
 
 ### Prerequisites
-- Access to **SAP GUI** (any version)
+- Access to **SAP GUI** (any version — ECC 6.0 or S/4HANA)
 - User with authorization for **SE38** transaction
 
 ### Step-by-Step Instructions
@@ -90,17 +128,19 @@ Displays a professional **interactive report** showing:
 1. In the ABAP Editor, **delete** all existing code
 2. **Copy** the full code from the `.abap` file
 3. **Paste** it into the editor
-4. Click **Save** (Ctrl + S)
+4. Click **Save** (`Ctrl + S`)
 
 #### ▶️ Step 4 — Activate the Program
 1. Click the **Activate** button (or press `Ctrl + F3`)
 2. Wait for "Object activated" message
-3. No syntax errors should appear
+3. No syntax errors should appear ✅
 
 #### ▶️ Step 5 — Execute / Run
 1. Press **F8** (Execute)
 2. For `ZALV_REPORT` — a selection screen appears first; press F8 again
 3. The output will display on screen
+
+> 💡 **Tip:** If you get a "package" popup when saving, just click the **Local Object** button (or enter `$TMP`) to save without a transport request.
 
 ---
 
@@ -110,10 +150,10 @@ Displays a professional **interactive report** showing:
 
 | Concept Used | Where Used |
 |---|---|
-| `TYPES:` | Defining custom structures |
+| `TYPES:` | Defining custom structures (PR, PO, GR, Invoice, Payment) |
 | `DATA:` | Declaring internal tables and work areas |
 | `APPEND` | Adding rows to internal table |
-| `LOOP AT ... INTO` | Reading each row from table |
+| `LOOP AT ... INTO` | Reading each row from table for display |
 | `WRITE:` | Printing output on screen |
 | `CLEAR` | Resetting work area between entries |
 
@@ -122,15 +162,17 @@ Displays a professional **interactive report** showing:
 - Internal tables (like a temporary database table in memory)
 - Work areas (like a single row/buffer)
 - Basic I/O using `WRITE`
+- Step-by-step linear process simulation
 
 ---
 
 ### ZO2C_PROCESS — Order to Cash
 
 Same concepts as P2P, additionally:
-- **Date arithmetic** — `lv_due_date = sy-datum + 30` (adds 30 days)
-- **System variables** — `sy-datum` (today's date)
+- **Date arithmetic** — `lv_due_date = sy-datum + 30` (adds 30 days for payment due date)
+- **System variables** — `sy-datum` (today's date), `sy-repid` (current program name)
 - **Linear process flow** — each step builds on previous
+- **3 customers** simulated: Ramesh Electronics, Sunita Traders, Patel Home Appliances
 
 ---
 
@@ -138,72 +180,43 @@ Same concepts as P2P, additionally:
 
 | Concept Used | Purpose |
 |---|---|
-| `SELECTION-SCREEN` | User input/filter screen |
-| `slis_t_fieldcat_alv` | ALV field catalog type |
-| `slis_layout_alv` | Controls grid appearance |
-| `PERFORM ... FORM` | Subroutines (modular code) |
-| `CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'` | Displays the grid |
-| `do_sum = 'X'` | Enables column total |
+| `SELECTION-SCREEN` | User input/filter screen before report runs |
+| `slis_t_fieldcat_alv` | ALV field catalog type — defines columns |
+| `slis_layout_alv` | Controls grid appearance (zebra, separators) |
+| `PERFORM ... FORM` | Subroutines (modular code — good practice) |
+| `CALL FUNCTION 'REUSE_ALV_GRID_DISPLAY'` | Standard SAP function to display the grid |
+| `do_sum = 'X'` | Enables automatic column total for Amount |
+| `col_pos` | Sets the position/order of each column |
+| `outputlen` | Sets the width of each column |
 
 ---
 
-## 🌐 GitHub Upload — Step by Step
+## 🔗 FI-MM-SD Integration (How the modules connect)
 
-### Step 1 — Create GitHub Account
-1. Go to [github.com](https://github.com)
-2. Click **Sign Up**
-3. Enter email, password, username
-4. Verify your email
-
-### Step 2 — Create a New Repository
-1. Click the **+** icon (top right) → **New repository**
-2. Repository name: `SAP-ABAP-ERP-Project`
-3. Description: `SAP ABAP P2P O2C ALV simulation project`
-4. Set visibility: **Public**
-5. Check ✅ **Add a README file**
-6. Click **Create repository**
-
-### Step 3 — Upload Your Files
-**Option A — Using GitHub Web (Easiest):**
-1. Inside your repository, click **Add file** → **Upload files**
-2. Drag and drop all `.abap` files and `README.md`
-3. Scroll down, add commit message: `Add SAP ABAP project files`
-4. Click **Commit changes**
-
-**Option B — Using Git Commands (Terminal):**
-```bash
-git clone https://github.com/YOUR_USERNAME/SAP-ABAP-ERP-Project.git
-cd SAP-ABAP-ERP-Project
-# Copy your files here
-git add .
-git commit -m "Add SAP ABAP project files"
-git push origin main
+```
+┌─────────────────────────────────────────────────┐
+│              SAP ERP Integration                 │
+│                                                  │
+│  MM (Buy Goods)    SD (Sell Goods)               │
+│       │                  │                       │
+│  GR Posted          PGI Posted                   │
+│       │                  │                       │
+│       └──────┬───────────┘                       │
+│              ▼                                   │
+│    FI (Financial Accounting)                     │
+│  Auto accounting entries created                 │
+│  Inventory / Revenue / COGS / AR / AP            │
+└─────────────────────────────────────────────────┘
 ```
 
-### Step 4 — Verify Upload
-1. Go back to your repository page
-2. All files should be visible: `ZP2P_PROCESS.abap`, `ZO2C_PROCESS.abap`, `ZALV_REPORT.abap`, `README.md`
-
-### Step 5 — Copy & Share Your Link
-1. Copy the URL from your browser:  
-   `https://github.com/YOUR_USERNAME/SAP-ABAP-ERP-Project`
-2. Share this link for submission ✅
-
----
-
-## 📦 ZIP Submission — Steps
-
-1. Open your **SAP_Project** folder
-2. Select **all files** inside it:
-   - `ZP2P_PROCESS.abap`
-   - `ZO2C_PROCESS.abap`
-   - `ZALV_REPORT.abap`
-   - `README.md`
-3. **Right-click** → **Compress** (or Send to → Zip)
-   - Windows: Right-click → **Send to → Compressed (zipped) folder**
-   - Mac: Right-click → **Compress**
-4. Rename the ZIP: `SAP_ABAP_Project_[YourName].zip`
-5. Submit the ZIP file ✅
+| Event in MM/SD | Auto Entry in FI |
+|---|---|
+| Goods Receipt (GR) | Debit Inventory, Credit GR/IR Clearing |
+| Invoice Verification (MIRO) | Debit GR/IR Clearing, Credit Vendor Payable |
+| Vendor Payment (F-53) | Debit Vendor, Credit Bank |
+| Post Goods Issue (PGI) | Debit COGS, Credit Inventory |
+| Customer Billing (VF01) | Debit Customer Receivable, Credit Sales Revenue |
+| Customer Payment (F-28) | Debit Bank, Credit Customer Receivable |
 
 ---
 
@@ -213,30 +226,73 @@ git push origin main
 ```
 ============================================================
    SAP P2P PROCESS SIMULATION - Procure to Pay
+   Module: MM + FI
 ============================================================
 >>> STEP 1: PURCHASE REQUISITION (PR)
-PR-1001   Office Chairs   10   HR Department   Created
-PR-1002   Laptops          5   IT Department   Created
+------------------------------------------------------------
+PR Number   Material         Qty   Department      Status
+--------   --------         ---   ----------      ------
+PR-1001     Office Chairs    10   HR Department   Created
+PR-1002     Laptops           5   IT Department   Created
 ** Purchase Requisition Created Successfully! **
 
 >>> STEP 2: PURCHASE ORDER (PO)
+------------------------------------------------------------
 PO-2001   ABC Furniture Ltd   Office Chairs   10   2500.00   25000.00
 PO-2002   TechWorld Pvt Ltd   Laptops          5  45000.00  225000.00
+** Purchase Order Created & Sent to Vendor! **
 ...
+** Procure-to-Pay (P2P) Process Completed Successfully! **
+============================================================
 ```
 
-### ALV Output:
+### O2C Process Output:
+```
+============================================================
+   SAP O2C PROCESS SIMULATION - Order to Cash
+   Module: SD + FI
+============================================================
+>>> STEP 1: SALES ORDER (SO)
+SO-1001   Ramesh Electronics   LED Television 55in   3   35000.00   105000.00
+SO-1002   Sunita Traders       Gaming Laptop         2   75000.00   150000.00
+** Sales Orders Created & Confirmed! **
+...
+** Order-to-Cash (O2C) Process Completed Successfully! **
+============================================================
+```
+
+### ALV Grid Output:
 ```
 ┌──────────┬───────────┬─────────────────────┬───────────────────┬─────┬──────────────┬────────────┬───────────┐
 │ Order ID │Order Type │ Customer/Vendor      │ Material/Product  │ Qty │ Amount (INR) │ Order Date │  Status   │
 ├──────────┼───────────┼─────────────────────┼───────────────────┼─────┼──────────────┼────────────┼───────────┤
 │ SO-1001  │ Sales     │ Ramesh Electronics   │ LED Television    │   3 │   105,000.00 │ 18.04.2024 │ Completed │
 │ SO-1002  │ Sales     │ Sunita Traders       │ Gaming Laptop     │   2 │   150,000.00 │ 18.04.2024 │ Completed │
+│ SO-1003  │ Sales     │ Patel Home Appl.     │ Washing Machine   │   5 │   110,000.00 │ 18.04.2024 │ Completed │
 │ PO-2001  │ Purchase  │ ABC Furniture Ltd    │ Office Chairs     │  10 │    25,000.00 │ 18.04.2024 │ Paid      │
+│ PO-2002  │ Purchase  │ TechWorld Pvt Ltd    │ Laptops           │   5 │   225,000.00 │ 18.04.2024 │ Paid      │
 ├──────────┼───────────┼─────────────────────┼───────────────────┼─────┼──────────────┼────────────┼───────────┤
 │          │           │                      │            Total  │     │   840,000.00 │            │           │
 └──────────┴───────────┴─────────────────────┴───────────────────┴─────┴──────────────┴────────────┴───────────┘
 ```
+
+---
+
+## 🎓 Viva Quick Reference
+
+| Question | Answer |
+|---|---|
+| What is an internal table? | A temporary table stored in memory during execution — like a spreadsheet in RAM |
+| What is a work area? | A single-row buffer used to read/write one row at a time from an internal table |
+| What does `APPEND` do? | Copies the work area row into the internal table (adds a new row) |
+| What is `sy-datum`? | SAP system variable that returns today's date |
+| What is ALV? | ABAP List Viewer — displays data as an interactive, sortable, exportable grid |
+| What is 3-way matching? | Checking that PO + GR + Invoice all match before paying vendor — prevents fraud |
+| What does PGI mean? | Post Goods Issue — stock leaves warehouse, SAP reduces inventory automatically |
+| What is `REUSE_ALV_GRID_DISPLAY`? | Standard SAP function module that renders the ALV grid on screen |
+| What is `do_sum = 'X'`? | Flag in field catalog that enables automatic column total in ALV |
+| What is `$TMP` package? | A local package in SAP for development objects that don't need transport |
+| Why Z prefix in program names? | SAP naming convention — Z/Y programs are customer-created (custom development) |
 
 ---
 
@@ -248,8 +304,9 @@ PO-2002   TechWorld Pvt Ltd   Laptops          5  45000.00  225000.00
 | SAP Version | Compatible with SAP ECC 6.0 / S/4HANA |
 | Transaction | SE38 (ABAP Editor) |
 | Level | Beginner / Student |
-| Modules | MM, SD, FI |
-| Pattern | Simulation (no real DB tables used) |
+| Modules | MM (Materials Management), SD (Sales & Distribution), FI (Financial Accounting) |
+| Pattern | Simulation — internal tables only (no real DB tables) |
+| Company Simulated | VedaStar Retail Solutions Pvt. Ltd. (Fictitious) |
 
 ---
 
@@ -259,7 +316,27 @@ PO-2002   TechWorld Pvt Ltd   Laptops          5  45000.00  225000.00
 - No real SAP master data is required
 - Programs can be run in any SAP system with SE38 access
 - Code is intentionally kept simple for learning purposes
+- All variable names and comments are written in plain English for easy understanding
+- The `TEXT-001` element in `ZALV_REPORT` needs to be created in SE38 under **Goto → Text Elements → Text Symbols** — or simply replace `TEXT-001` with a hardcoded string like `'Selection Parameters'`
 
 ---
 
-*Made with ❤️ for SAP ABAP Learning*
+## 📚 Key T-Codes Used in This Project
+
+| T-Code | Full Name | Used In |
+|--------|-----------|---------|
+| SE38 | ABAP Editor | Running all programs |
+| ME51N | Create Purchase Requisition | P2P Step 1 |
+| ME21N | Create Purchase Order | P2P Step 2 |
+| MIGO | Goods Movement | P2P Step 3 |
+| MIRO | Invoice Verification | P2P Step 4 |
+| F-53 | Post Outgoing Payment | P2P Step 5 |
+| VA01 | Create Sales Order | O2C Step 1 |
+| VL01N | Create Delivery | O2C Step 2 |
+| VL02N | Change Delivery / PGI | O2C Step 3 |
+| VF01 | Create Billing Document | O2C Step 4 |
+| F-28 | Post Incoming Payment | O2C Step 5 |
+
+---
+
+*Made with ❤️ for SAP ABAP Learning — KIIT University 2024–2025*
